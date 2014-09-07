@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # Course 1. Lesson 1. Blackjack (procedural)
 
 # The playing card Unicode symbols are copied from here:
@@ -10,7 +12,8 @@
 require 'pry'
 
 FACES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-SUITS = [{'C' => '♧'}, {'D' => '♢'}, {'H' => '♡'}, {'S' => '♤'}]
+SUITS = [{'C' => "\u2667"}, {'D' => "\u2662"}, {'H' => "\u2661"}, {'S' => "\u2664"}]
+# SUITS = [{'C' => '♧'}, {'D' => '♢'}, {'H' => '♡'}, {'S' => '♤'}]
 DELAY = 1
 
 # for drawing
@@ -32,6 +35,12 @@ def numeric?(str)
   end
 end
 
+def unicode_supported?
+  # test if unicode support is available 
+  # found this test here: http://rosettacode.org/wiki/Terminal_control/Unicode_output#Ruby 
+  ENV.values_at("LC_ALL","LC_CTYPE","LANG").compact.first.include?("UTF-8")
+end
+
 def make_deck
   deck = []
   card = {}
@@ -46,7 +55,9 @@ end
 def make_card(suit, face)
   card = {}
   # suit is a hash with only one value
-  card = {face: face, suit: suit.keys[0], values:nil, symbol:suit.values[0], is_face_up: true}
+  # use the letter if unicode is not supported
+  symb = unicode_supported? ? suit.values[0] : suit.keys[0]
+  card = {face: face, suit: suit.keys[0], values:nil, symbol:symb, is_face_up: true}
   if numeric?(face)
     card[:values] = [face.to_i]
   else
@@ -384,7 +395,7 @@ def draw_title(with_marquee = true)
 end
 
 # ==================== PROGRAM START ====================
- 
+
 # deck is an array of cards. A card is a hash
 deck = make_deck
       
