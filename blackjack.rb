@@ -56,7 +56,7 @@ def make_card(suit, face)
   card = {}
   # suit is a hash with only one value
   # use the letter if unicode is not supported
-  symb = unicode_supported? ? suit.values[0] : suit.keys[0]
+  symb = unicode_supported? ? suit.values[0].force_encoding(Encoding::UTF_8) : suit.keys[0]
   card = {face: face, suit: suit.keys[0], values:nil, symbol:symb, is_face_up: true}
   if numeric?(face)
     card[:values] = [face.to_i]
